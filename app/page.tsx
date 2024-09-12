@@ -39,11 +39,12 @@ const CashFlowApp = () => {
     calculateTotalValues();
   }, [calculateTotalValues]);
 
-  const showAlertMessage = (message) => {
+  const showAlertMessage = (message: string) => {
     setAlertMessage(message);
     setShowAlert(true);
     setTimeout(() => setShowAlert(false), 3000);
   };
+  
 
   const handleChange = (field, value) => {
     const newValue = Math.max(0, parseInt(value) || 0);
