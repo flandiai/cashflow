@@ -27,7 +27,7 @@ const CashFlowApp = () => {
   const [tempExpenseIncome, setTempExpenseIncome] = useState(0);
 
   const calculateTotalValues = useCallback(() => {
-    const totalPassiveIncome = assets.reduce((total, asset) => total + (asset.cashFlow || 0), 0);
+    const totalPassiveIncome = assets.reduce((total, asset) => total + (asset.cashflow || 0), 0);
     setPlayer(prev => ({
       ...prev,
       passive: totalPassiveIncome,

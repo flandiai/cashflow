@@ -18,13 +18,13 @@ export const AssetManagement = ({ player, updatePlayerState, showAlertMessage, a
     const [propertyUnits, setPropertyUnits] = useState(1);
     const [propertyPrice, setPropertyPrice] = useState('');
     const [propertyDownPayment, setPropertyDownPayment] = useState('');
-    const [propertyCashFlow, setPropertyCashFlow] = useState('');
+    const [propertyCashflow, setPropertyCashflow] = useState('');
 
     const handleBuyRealEstate = () => {
         const price = parseInt(propertyPrice);
         const downPayment = parseInt(propertyDownPayment);
-        const cashFlow = parseInt(propertyCashFlow);
-        if (!propertyType || !price || !downPayment || !cashFlow) {
+        const cashflow = parseInt(propertyCashflow);
+        if (!propertyType || !price || !downPayment || !cashflow) {
             showAlertMessage("Bitte füllen Sie alle Felder aus.");
             return;
         }
@@ -34,16 +34,16 @@ export const AssetManagement = ({ player, updatePlayerState, showAlertMessage, a
                 type: "Immobilie",
                 cost: price,
                 downPayment: downPayment,
-                cashFlow: cashFlow,
+                cashflow: cashflow,
                 units: propertyUnits
             };
             setAssets([...assets, newProperty]);
             updatePlayerState(prev => ({
                 ...prev,
                 cashflow: prev.cashflow - downPayment,
-                passive: prev.passive + cashFlow
+                passive: prev.passive + cashflow
             }));
-            showAlertMessage(`Sie haben ${newProperty.name} für eine Anzahlung von ${downPayment}€ gekauft. Es generiert ${cashFlow}€ monatlich.`);
+            showAlertMessage(`Sie haben ${newProperty.name} für eine Anzahlung von ${downPayment}€ gekauft. Es generiert ${cashflow}€ monatlich.`);
         } else {
             showAlertMessage("Sie haben nicht genug Bargeld für die Anzahlung.");
         }
@@ -145,8 +145,8 @@ export const AssetManagement = ({ player, updatePlayerState, showAlertMessage, a
                 <Input
                     type="number"
                     placeholder="Monatlicher Cashflow"
-                    value={propertyCashFlow}
-                    onChange={(e) => setPropertyCashFlow(e.target.value)}
+                    value={propertyCashflow}
+                    onChange={(e) => setPropertyCashflow(e.target.value)}
                     className="mt-2"
                 />
                 <Button onClick={handleBuyRealEstate} className="mt-4">Immobilie kaufen</Button>
@@ -225,7 +225,7 @@ export const ViewAssets = ({ assets, setAssets, updatePlayerState, showAlertMess
         updatePlayerState(prev => ({
             ...prev,
             cashflow: prev.cashflow + totalSalePrice,
-            passive: asset.type === "Immobilie" ? prev.passive - asset.cashFlow : prev.passive
+            passive: asset.type === "Immobilie" ? prev.passive - asset.cashflow : prev.passive
         }));
 
         if (asset.type === "Immobilie" || quantity === asset.quantity) {
@@ -245,7 +245,7 @@ export const ViewAssets = ({ assets, setAssets, updatePlayerState, showAlertMess
                 <div key={index} className="mb-4 p-4 border rounded">
                     <strong>{asset.name}</strong> ({asset.type}): 
                     {asset.type === "Immobilie" 
-                        ? ` Kosten ${asset.cost}€, Anzahlung ${asset.downPayment}€, Cashflow ${asset.cashFlow}€`
+                        ? ` Kosten ${asset.cost}€, Anzahlung ${asset.downPayment}€, Cashflow ${asset.cashflow}€`
                         : ` ${asset.quantity} ${asset.type === "Aktie" ? "Aktien" : "Münzen"} zu ${asset.costPerShare || asset.costPerCoin}€ pro Stück`
                     }
                     {asset.type !== "Immobilie" && (
