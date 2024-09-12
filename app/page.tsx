@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AssetManagement, ViewAssets } from '@/components/AssetManagement';
+import { Asset } from './types';
 
 const CashFlowApp = () => {
   const [player, setPlayer] = useState({
@@ -17,7 +18,7 @@ const CashFlowApp = () => {
     expenses: 2500
   });
 
-  const [assets, setAssets] = useState([]);
+  const [assets, setAssets] = useState<Asset[]>([]);
   const [currentLoan, setCurrentLoan] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -27,7 +28,7 @@ const CashFlowApp = () => {
   const [tempExpenseIncome, setTempExpenseIncome] = useState(0);
 
   const calculateTotalValues = useCallback(() => {
-    const totalPassiveIncome = assets.reduce((total, asset) => total + (asset.cashflow || 0), 0);
+    const totalPassiveIncome = assets.reduce((total, asset: Asset) => total + (asset.cashflow || 0), 0);
     setPlayer(prev => ({
       ...prev,
       passive: totalPassiveIncome,
