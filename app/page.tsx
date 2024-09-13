@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AssetManagement, ViewAssets } from '@/components/AssetManagement';
-import { Asset } from './types'; // Ensure the Asset type is correct in ./types.ts
+import { Asset } from './types'; // Stellen Sie sicher, dass der Asset-Typ korrekt in ./types.ts definiert ist
 
 const CashFlowApp: React.FC = () => {
   const [player, setPlayer] = useState({
@@ -18,7 +18,7 @@ const CashFlowApp: React.FC = () => {
     expenses: 2500,
   });
 
-  const [assets, setAssets] = useState<Asset[]>([]); // Ensure Asset is imported correctly
+  const [assets, setAssets] = useState<Asset[]>([]);
   const [currentLoan, setCurrentLoan] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -80,9 +80,9 @@ const CashFlowApp: React.FC = () => {
         <AssetManagement
           player={player}
           updatePlayerState={setPlayer}
-          showAlertMessage={showAlertMessage}
           assets={assets}
           setAssets={setAssets}
+          onClose={() => setShowDialog(false)}
         />
       ),
     });
@@ -108,7 +108,9 @@ const CashFlowApp: React.FC = () => {
           cashflow: prev.cashflow - 1000,
           expenses: prev.expenses - 100,
         }));
-        showAlertMessage('Sie haben 1000€ Ihres Kredits zurückgezahlt. Ihre monatlichen Ausgaben sind um 100€ gesunken.');
+        showAlertMessage(
+          'Sie haben 1000€ Ihres Kredits zurückgezahlt. Ihre monatlichen Ausgaben sind um 100€ gesunken.',
+        );
       } else {
         showAlertMessage(
           'Sie können keinen Kredit zurückzahlen. Entweder haben Sie keinen Kredit oder nicht genug Bargeld.',
@@ -164,23 +166,9 @@ const CashFlowApp: React.FC = () => {
         </Alert>
       )}
 
+      {/* Entferntes Aktuelles Guthaben von hier */}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <Card className="bg-gray-700 text-white relative">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <DollarSign className="mr-2" /> Aktuelles Guthaben
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-semibold">{player.cashflow}€</p>
-          </CardContent>
-          <Button
-            className="absolute top-2 right-2 p-1 min-w-0 h-auto bg-transparent hover:bg-gray-600"
-            onClick={() => setShowCashflowEdit(true)}
-          >
-            <Edit size={16} />
-          </Button>
-        </Card>
         <Card className="bg-gray-700 text-white">
           <CardHeader>
             <CardTitle className="flex items-center">
@@ -203,7 +191,9 @@ const CashFlowApp: React.FC = () => {
         <CardContent>
           {renderInputWithAdjust('salary', 'Gehalt')}
           <p>Passives Einkommen: {player.passive}€</p>
-          <p className="font-bold">Gesamtes Einkommen: {player.salary + player.passive}€</p>
+          <p className="font-bold">
+            Gesamtes Einkommen: {player.salary + player.passive}€
+          </p>
           {renderInputWithAdjust('expenses', 'Monatliche Gesamtausgaben')}
           <div className="flex items-center mt-2">
             <span className="mr-2">Kreditkosten:</span>
@@ -235,9 +225,27 @@ const CashFlowApp: React.FC = () => {
         </Button>
         <div className="col-span-2 md:col-span-1 flex flex-col">
           {renderInputWithAdjust('tempExpenseIncome', 'Ausgaben/Einnahmen')}
-          <Button onClick={handleExpenseIncomeSubmit} className="mt-2 bg-blue-500 text-white">
+          <Button
+            onClick={handleExpenseIncomeSubmit}
+            className="mt-2 bg-blue-500 text-white"
+          >
             Buchen
           </Button>
+          {/* Hinzugefügtes Aktuelles Guthaben hier */}
+          <Card className="bg-gray-700 text-white mt-4 p-2">
+            <div className="flex items-center">
+              <DollarSign className="mr-2" />
+              <span className="font-semibold text-2xl bg-green-500 text-white px-4 py-2 rounded">
+  Aktuelles Guthaben: {player.cashflow}€
+</span>
+              <Button
+                className="ml-auto p-1 min-w-0 h-auto bg-transparent hover:bg-gray-600"
+                onClick={() => setShowCashflowEdit(true)}
+              >
+                <Edit size={40} />
+              </Button>
+            </div>
+          </Card>
         </div>
       </div>
 
@@ -254,10 +262,16 @@ const CashFlowApp: React.FC = () => {
             </span>
           </div>
           <div className="flex mt-2">
-            <Button onClick={() => handleLoan('repay')} className="mr-2 bg-red-500 text-white">
+            <Button
+              onClick={() => handleLoan('repay')}
+              className="mr-2 bg-red-500 text-white"
+            >
               <Minus className="mr-1" /> Kredit zurückzahlen
             </Button>
-            <Button onClick={() => handleLoan('add')} className="bg-green-500 text-white">
+            <Button
+              onClick={() => handleLoan('add')}
+              className="bg-green-500 text-white"
+            >
               <Plus className="mr-1" /> Kredit aufnehmen
             </Button>
           </div>
@@ -279,11 +293,7 @@ const CashFlowApp: React.FC = () => {
             <DialogTitle>{dialogContent.title}</DialogTitle>
           </DialogHeader>
           {dialogContent.description}
-          <DialogFooter>
-            <Button onClick={() => setShowDialog(false)} className="bg-red-500 text-white">
-              Schließen
-            </Button>
-          </DialogFooter>
+          {/* DialogFooter kann entfernt werden, wenn Schließen innerhalb der Komponente gehandhabt wird */}
         </DialogContent>
       </Dialog>
 
@@ -299,7 +309,10 @@ const CashFlowApp: React.FC = () => {
             className="bg-gray-800 text-white"
           />
           <DialogFooter>
-            <Button onClick={() => setShowCashflowEdit(false)} className="bg-green-500 text-white">
+            <Button
+              onClick={() => setShowCashflowEdit(false)}
+              className="bg-green-500 text-white"
+            >
               Bestätigen
             </Button>
           </DialogFooter>
